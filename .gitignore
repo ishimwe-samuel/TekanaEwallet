@@ -1,0 +1,45 @@
+# Django development settings and database configuration
+*.pyc
+*.pyo
+__pycache__/
+db.sqlite3
+venv
+data
+
+# Logs and debugging
+logs/
+*.log
+local_settings.py
+
+# Media and static files (use a proper storage backend in production)
+media/
+static/
+
+# Secret key
+*.secret_key
+
+# Environment files
+.env
+
+# IDE files (such as .vscode, .idea, etc.)
+.vscode/
+.idea/
+
+# Compiled Python files
+__pycache__/
+*.pyc
+*.pyo
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+
+# Local development settings
+.local/
+local_settings.py
+
+# Mac OS
+.DS_Store
+
+# Compiled Python

@@ -1,0 +1,41 @@
+version: '3'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      - postgres
+      - redis
+      - celery
+
+  postgres:
+    image: postgis/postgis:13-3.1
+    environment:
+      POSTGRES_DB: tekana
+      POSTGRES_USER: tekanauser
+      POSTGRES_PASSWORD: tekanapassword
+    volumes:
+      - "./data/postgres:/var/lib/postgresql/data"
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: "celery -A TekanaEwallet  worker -l INFO --pool=prefork -O fair -c 4"
+    volumes:
+      - .:/app
+    depends_on:
+      - postgres
+      - redis
