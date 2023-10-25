@@ -1,9 +1,14 @@
 version: '3'
+networks:
+  tekana-network:
+    external: true
 services:
   web:
     build:
       context: .
       dockerfile: Dockerfile
+    networks:
+      - tekana-network
     ports:
       - "8000:8000"
     volumes:
@@ -19,6 +24,8 @@ services:
       POSTGRES_DB: tekana
       POSTGRES_USER: tekanauser
       POSTGRES_PASSWORD: tekanapassword
+    networks:
+      - tekana-network
     volumes:
       - "./data/postgres:/var/lib/postgresql/data"
     ports:
@@ -28,7 +35,8 @@ services:
     image: redis:latest
     ports:
       - "6379:6379"
-
+    networks:
+      - tekana-network
   celery:
     build:
       context: .
