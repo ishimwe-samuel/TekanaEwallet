@@ -5,6 +5,7 @@ __pycache__/
 db.sqlite3
 venv
 data
+dump.rdb
 
 # Logs and debugging
 logs/
