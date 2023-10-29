@@ -35,7 +35,7 @@ SECRET_KEY = env(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['ALLOWED_HOSTS']
+ALLOWED_HOSTS = ['www.samueldev.com','samueldev.com','tekana.samueldev.com','www.tekana.samueldev.com']
 
 
 # Application definition
