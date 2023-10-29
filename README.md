@@ -5,6 +5,7 @@ Tekana e-Wallet is an e-Wallet platform that helps users transfer money to their
 
 **Server:** Python - Django \
 **Database Engine:** PostgreSQL \
+**Background Worker :** Celery
 **Caching Engine:** Redis
 
 
