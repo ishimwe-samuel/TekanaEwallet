@@ -37,5 +37,5 @@ To run celery, run the following command
 ```
 ## Demo
 please access this link for a quick demo \
-https://samueldev.com
+https://www.samueldev.com
 
