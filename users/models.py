@@ -9,6 +9,7 @@ class UserManager(BaseUserManager):
     """
     This manager helps in the creation of users and listing of users
     """
+
     def create_user(self, email, first_name, last_name, password=None, **extra_fields):
         """
         Creates and saves a User with the given email and password.
@@ -20,6 +21,24 @@ class UserManager(BaseUserManager):
         )
 
         user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, first_name=None, last_name=None, password=None, **extra_fields):
+        """
+        Creates and saves a superuser with the given email and password.
+        """
+        self.model.REQUIRED_FIELDS.append("first_name")
+        self.model.REQUIRED_FIELDS.append("last_name")
+        user = self.create_user(
+            email,
+            first_name,
+            last_name,
+            password=password,
+            **extra_fields
+        )
+        user.staff = True
+        user.active = True
         user.save(using=self._db)
         return user
 
@@ -63,12 +82,20 @@ class User(AbstractBaseUser):
 
     def get_full_name(self):
         return f"{self.first_name} {self.last_name}"
+
     @property
     def is_active(self):
         return bool(self.active and not self.is_suspended)
+
     @property
     def is_staff(self):
         return self.staff
+
+    @property
+    def has_account(self):
+        if hasattr(self, 'account'):
+            return True
+        return False
 
 
 class UserAdditionalInfo(models.Model):
@@ -78,17 +105,16 @@ class UserAdditionalInfo(models.Model):
     id = models.UUIDField(default=uuid4, primary_key=True, editable=False)
     user = models.OneToOneField(
         User, related_name="information", on_delete=models.CASCADE)
-    country = models.CharField(max_length=10, null=True, blank=True)
-    province = models.CharField(max_length=10, null=True, blank=True)
-    city = models.CharField(max_length=10, null=True, blank=True)
-    province = models.CharField(max_length=50, blank=True, null=True)
-    phone_number1 = models.CharField(max_length=15, unique=True)
-    phone_number2 = models.CharField(max_length=15, unique=True)
+    country = models.CharField(max_length=50, null=True, blank=True)
+    province = models.CharField(max_length=50, null=True, blank=True)
+    city = models.CharField(max_length=50, null=True, blank=True)
+    phone_number1 = models.CharField(max_length=30, unique=True)
+    phone_number2 = models.CharField(max_length=30, unique=True)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.user.get_fullname()
+        return self.user.get_full_name()
 
 
 class OTP(models.Model):

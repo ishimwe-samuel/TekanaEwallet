@@ -30,7 +30,7 @@ class TransferFundsSerializer(serializers.ModelSerializer):
     """
     This serializer performs a transaction to both the sender and receiver accounts
     """
-    sender = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    sender = serializers.ReadOnlyField(default=serializers.CurrentUserDefault())
     receiver = serializers.PrimaryKeyRelatedField(
         allow_null=True, queryset=User.objects.all(), required=True, validators=[null_validator])
 

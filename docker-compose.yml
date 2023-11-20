@@ -1,33 +1,31 @@
 version: '3'
-networks:
-  tekana-network:
-    external: true
 services:
   web:
+    image: "tekana"
+    container_name: "tekana_ewallet"
     build:
       context: .
       dockerfile: Dockerfile
-    networks:
-      - tekana-network
     ports:
       - "8000:8000"
     volumes:
       - .:/app
-    depends_on:
-      - postgres
-      - redis
-      - celery
-
-  postgres:
-    image: postgis/postgis:13-3.1
     environment:
-      POSTGRES_DB: tekana
+      SECRET_KEY: f*-_v^reor&(_#@#*#aug0k=p8142raif7k43v0nyd&-s#
+      DB_ENGINE: django.contrib.gis.db.backends.postgis
+      DB_NAME: tekanadb
+      DB_USER: tekanauser
+      DB_PASSWORD: tekanapassword
+      DB_HOST: db
+      DB_PORT: 5432
+    depends_on:
+      - db
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: tekanadb
       POSTGRES_USER: tekanauser
       POSTGRES_PASSWORD: tekanapassword
-    networks:
-      - tekana-network
-    volumes:
-      - "./data/postgres:/var/lib/postgresql/data"
     ports:
       - "5432:5432"
 
@@ -35,15 +33,15 @@ services:
     image: redis:latest
     ports:
       - "6379:6379"
-    networks:
-      - tekana-network
+
+  # Celery worker
   celery:
     build:
       context: .
       dockerfile: Dockerfile
-    command: "celery -A TekanaEwallet  worker -l INFO --pool=prefork -O fair -c 4"
-    volumes:
-      - .:/app
+    command: "celery -A TekanaEwallet worker -l info"
     depends_on:
-      - postgres
+      - db
       - redis
+      - web
+    restart: on-failure
